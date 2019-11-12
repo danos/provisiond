@@ -1,0 +1,25 @@
+first {
+    firstLeaf firstValue
+    second {
+	    secondLeaf secondValue
+	}
+	firstSubCont {
+        unassigned-b {
+	        unassigned-b-leaf foo
+	    }
+	}
+}
+unassigned-a-cont {
+    second {
+	    secondLeaf secondOtherValue
+	}
+    unassigned-a-leaf a_value
+    unassigned-a-subcont {
+	    unassigned-b {
+		    unassigned-b-leaf bar
+		}
+	}
+	unassigned-c {
+	    unassigned-c-leaf anotherValue
+	}
+}

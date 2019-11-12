@@ -1,0 +1,23 @@
+Source: provisiond
+Section: admin
+Maintainer: Vyatta Package Maintainers <DL-vyatta-help@att.com>
+Build-Depends:
+ debhelper (>= 9),
+ dh-golang,
+ dh-vci,
+ golang-any,
+ golang-github-danos-config-dev,
+ golang-github-danos-encoding-rfc7951-dev,
+ golang-github-danos-mgmterror-dev,
+ golang-github-danos-vci-dev (>= 0.4),
+ golang-github-danos-yang-dev,
+ golang-github-danos-yangd-dev (>= 1.1)
+Standards-Version: 3.9.8
+
+Package: provisiond
+Architecture: any
+Priority: extra
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Built-Using: ${misc:Built-Using}
+Description: Legacy provisioning daemon
+ Legacy provisioning manager for non-VCI component configuration

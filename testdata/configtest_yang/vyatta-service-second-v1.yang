@@ -1,0 +1,33 @@
+module vyatta-service-second-v1 {
+	namespace "urn:vyatta.com:test:vyatta-service-second:1";
+	prefix second;
+
+	import vyatta-service-first-v1 {
+		prefix first;
+	}
+
+	import vyatta-service-unassigned-a-v1 {
+		prefix unassigned-a;
+	}
+
+	organization "Brocade Communications Systems, Inc.";
+	revision 2017-02-28 {
+		description "Second test schema for configd-schema";
+	}
+
+	augment /first:first {
+		container second {
+			leaf secondLeaf {
+				type string;
+			}
+		}
+	}
+
+	augment /unassigned-a:unassigned-a-cont {
+		container second {
+			leaf secondLeaf {
+				type string;
+			}
+		}
+	}
+}

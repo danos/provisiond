@@ -1,0 +1,9 @@
+[Vyatta Component]
+Name=net.vyatta.vci.config.provisiond
+Description=provisiond interface
+ExecName=/opt/vyatta/sbin/lu -user configd /usr/sbin/provisiond
+ConfigFile=/etc/vyatta/provisiond.conf
+DefaultComponent=true
+
+[Model net.vyatta.vci.config.provisiond.v1]
+ModelSets=vyatta-v1

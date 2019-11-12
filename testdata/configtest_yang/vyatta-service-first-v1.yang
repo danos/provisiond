@@ -1,0 +1,32 @@
+module vyatta-service-first-v1 {
+	namespace "urn:vyatta.com:test:vyatta-service-first:1";
+	prefix first;
+
+	organization "Brocade Communications Systems, Inc.";
+	revision 2017-02-28 {
+		description "First test schema for configd-schema";
+	}
+
+	container first {
+		leaf firstLeaf {
+			type string;
+		}
+		container firstSubCont {
+			presence "Check this appears for first as well as augment NS";
+		}
+		list userList {
+			key name;
+			leaf name {
+				type string;
+			}
+			ordered-by user;
+		}
+		list systemList {
+			key name;
+			leaf name {
+				type string;
+			}
+			ordered-by system;
+		}
+	}
+}
