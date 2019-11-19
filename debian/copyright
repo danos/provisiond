@@ -1,8 +1,8 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 
 Files: *
-Copyright: 2017, Brocade Communications Systems, Inc.
-           2017-2019, AT&T Intellectual Property.
+Copyright: 2017-2019, AT&T Intellectual Property.
+           2017, Brocade Communications Systems, Inc.
 License: GPL-2.0
 
 License: GPL-2.0

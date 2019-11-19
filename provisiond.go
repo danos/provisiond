@@ -57,7 +57,6 @@ func (c *Config) Get() string {
 
 func (c *Config) Check(cfg string) error {
 	// TODO - run configd:validate here???
-	fmt.Printf("Checking Config.\n")
 	return nil
 }
 
@@ -87,7 +86,6 @@ func (c *Config) loadFromFile() error {
 }
 
 func (c *Config) Set(cfg string) error {
-	fmt.Println("Setting Config")
 	c.data.Store(cfg)
 
 	err := c.saveToFile(cfg)
@@ -120,13 +118,11 @@ func NewState() *State {
 func (s *State) Get() *Settings {
 	// TODO - should this ever be called?
 	// TODO: honour path
-	fmt.Println("Getting State")
 	return s.settings.Load().(*Settings)
 }
 
 func (s *State) set(v *Settings) {
 	// TODO - should this ever be called?
-	fmt.Println("Setting State")
 	new_state := &Settings{}
 	if v == nil {
 		s.settings.Store(new_state)

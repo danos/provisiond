@@ -1,3 +1,9 @@
+provisiond (2.6) unstable; urgency=medium
+
+  * DANOS Import Master
+
+ -- Vyatta Package Maintainers <DL-vyatta-help@att.com>  Fri, 15 Nov 2019 11:40:41 +0000
+
 provisiond (2.5.0.1) unstable; urgency=medium
 
   * DANOS Import

@@ -10,7 +10,7 @@ module vyatta-service-second-v1 {
 		prefix unassigned-a;
 	}
 
-	organization "Brocade Communications Systems, Inc.";
+	organization "AT&T Inc.";
 	revision 2017-02-28 {
 		description "Second test schema for configd-schema";
 	}
