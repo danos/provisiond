@@ -11,6 +11,8 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"log/syslog"
 	"os"
 	"os/exec"
 	"strings"
@@ -32,6 +34,18 @@ const (
 	componentDir           = "/lib/vci/components"
 	yangDir                = "/usr/share/configd/yang"
 )
+
+var (
+	wlog *log.Logger
+)
+
+func init() {
+	var err error
+	wlog, err = syslog.NewLogger(syslog.LOG_WARNING, 0)
+	if err != nil {
+		wlog = log.New(os.Stdout, "WARNING", 0)
+	}
+}
 
 //Config is the object that holds the current running configuration
 //It provides update, validation and retrieval of the configuration
@@ -155,7 +169,7 @@ func NewRPCMap() map[string]interface{} {
 			modName := getModuleNameFromNamespace(ms, ns)
 			modRpcs := make(map[string]interface{}, len(rpcs))
 			for name, rpc := range rpcs {
-				modRpcs[name] = genRpcFunc(name, rpc)
+				modRpcs[name] = genRpcFunc(modName, name, rpc)
 			}
 			if len(modRpcs) > 0 {
 				ourRpcs[modName] = modRpcs
@@ -200,17 +214,19 @@ func getModelSet() (schema.ModelSet, error) {
 }
 
 func genRpcFunc(
+	modName string,
 	rpcName string,
 	rpc interface{},
 ) func(in string) (string, error) {
 	rpcFunc := func(jsonIn string) (jsonOut string, err error) {
-		return handleLegacyRpc(rpc.(schema.Rpc), rpcName, jsonIn)
+		return handleLegacyRpc(rpc.(schema.Rpc), modName, rpcName, jsonIn)
 	}
 	return rpcFunc
 }
 
 func handleLegacyRpc(
 	rpc schema.Rpc,
+	modName string,
 	rpcName string,
 	args string,
 ) (string, error) {
@@ -224,7 +240,7 @@ func handleLegacyRpc(
 		return "", err
 	}
 
-	return callLegacyRpcScript(rpc, rpcName, inputTree)
+	return callLegacyRpcScript(rpc, modName, rpcName, inputTree)
 }
 
 func resolvePath(name, path string) string {
@@ -250,6 +266,7 @@ func resolvePath(name, path string) string {
 
 func callLegacyRpcScript(
 	rpc schema.Rpc,
+	modName string,
 	rpcName string,
 	inputTree datanode.DataNode,
 ) (string, error) {
@@ -275,8 +292,9 @@ func callLegacyRpcScript(
 	c := exec.Command(name, rpcargs[1:]...)
 	c.Env = append(os.Environ(), "PATH="+scriptPaths)
 	c.Stdin = bytes.NewBuffer(input)
-	// TODO: Seperate stdout from stderr
-	output, err := c.CombinedOutput()
+	var stdErr bytes.Buffer
+	c.Stderr = &stdErr
+	output, err := c.Output()
 	if err != nil {
 		if _, ok := err.(*exec.ExitError); !ok {
 			cerr := mgmterror.NewOperationFailedApplicationError()
@@ -286,10 +304,18 @@ func callLegacyRpcScript(
 		}
 	}
 	if !c.ProcessState.Success() {
+		errStr := stdErr.String()
+		if errStr == "" {
+			errStr = string(output)
+		}
 		cerr := mgmterror.NewOperationFailedApplicationError()
-		cerr.Message = fmt.Sprintf("RPC failure: %s", string(output))
+		cerr.Message = fmt.Sprintf("RPC failure: %s", errStr)
 		return "", cerr
 	}
 
+	stdErrStr := stdErr.String()
+	if stdErrStr != "" {
+		wlog.Printf("%s:%s (%s): %s\n", modName, rpcName, script, stdErrStr)
+	}
 	return string(output), err
 }
