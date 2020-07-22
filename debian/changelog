@@ -1,3 +1,10 @@
+provisiond (2.7) unstable; urgency=medium
+
+  [ John Southworth ]
+  * Split stderr from stdout when running RPC scripts.
+
+ -- William Ivory <william.ivory@intl.att.com>  Wed, 22 Jul 2020 11:44:34 +0100
+
 provisiond (2.6) unstable; urgency=medium
 
   * DANOS Import Master
