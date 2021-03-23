@@ -26,7 +26,6 @@ import (
 	"github.com/danos/yang/data/datanode"
 	yangenc "github.com/danos/yang/data/encoding"
 	yang "github.com/danos/yang/schema"
-	"github.com/danos/yangd/dbus"
 )
 
 const (
@@ -194,10 +193,6 @@ func getModelSet() (schema.ModelSet, error) {
 	if err != nil {
 		return nil, nil
 	}
-	compDispatch, err := dbus.NewDispatcher(nil)
-	if err != nil {
-		return nil, nil
-	}
 
 	ycfg := yangconfig.NewConfig().IncludeYangDirs(yangDir).
 		IncludeFeatures(compile.DefaultCapsLocation).SystemConfig()
@@ -208,7 +203,6 @@ func getModelSet() (schema.ModelSet, error) {
 			Features:      ycfg.FeaturesChecker(),
 			Filter:        compile.IsConfig},
 		&schema.CompilationExtensions{
-			Dispatcher:      compDispatch,
 			ComponentConfig: compConfig,
 		})
 }
