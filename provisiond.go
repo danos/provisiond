@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019, AT&T Intellectual Property. All rights reserved.
+// Copyright (c) 2018-2021, AT&T Intellectual Property. All rights reserved.
 //
 // Copyright (c) 2017 by Brocade Communications Systems, Inc.
 // All rights reserved.
@@ -211,17 +211,18 @@ func genRpcFunc(
 	modName string,
 	rpcName string,
 	rpc interface{},
-) func(in string) (string, error) {
-	rpcFunc := func(jsonIn string) (jsonOut string, err error) {
-		return handleLegacyRpc(rpc.(schema.Rpc), modName, rpcName, jsonIn)
+) func(meta, in string) (string, error) {
+	return func(meta, jsonIn string) (jsonOut string, err error) {
+		return handleLegacyRpc(rpc.(schema.Rpc),
+			modName, rpcName, meta, jsonIn)
 	}
-	return rpcFunc
 }
 
 func handleLegacyRpc(
 	rpc schema.Rpc,
 	modName string,
 	rpcName string,
+	metadata string,
 	args string,
 ) (string, error) {
 
@@ -234,7 +235,7 @@ func handleLegacyRpc(
 		return "", err
 	}
 
-	return callLegacyRpcScript(rpc, modName, rpcName, inputTree)
+	return callLegacyRpcScript(rpc, modName, rpcName, metadata, inputTree)
 }
 
 func resolvePath(name, path string) string {
@@ -262,6 +263,7 @@ func callLegacyRpcScript(
 	rpc schema.Rpc,
 	modName string,
 	rpcName string,
+	metadata string,
 	inputTree datanode.DataNode,
 ) (string, error) {
 	scriptPaths :=
@@ -284,7 +286,7 @@ func callLegacyRpcScript(
 
 	name := resolvePath(rpcargs[0], scriptPaths)
 	c := exec.Command(name, rpcargs[1:]...)
-	c.Env = append(os.Environ(), "PATH="+scriptPaths)
+	c.Env = append(os.Environ(), "PATH="+scriptPaths, "VCI_RPC_METADATA="+metadata)
 	c.Stdin = bytes.NewBuffer(input)
 	var stdErr bytes.Buffer
 	c.Stderr = &stdErr
