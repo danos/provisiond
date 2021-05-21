@@ -159,8 +159,19 @@ func NewRPCMap() map[string]interface{} {
 		return nil
 	}
 
+	compConfig, err := conf.LoadComponentConfigDir(componentDir)
+	if err != nil {
+		return nil
+	}
+
+	mappings, err := schema.CreateComponentNSMappings(
+		ms, "vyatta-v1", compConfig)
+	if err != nil {
+		return nil
+	}
+
 	// Filter RPCs to only include ones belonging to the default component
-	modMap := ms.GetDefaultServiceModuleMap()
+	modMap := mappings.GetDefaultServiceModuleMap()
 	allRpcs := ms.Rpcs()
 	ourRpcs := make(map[string]interface{}, len(allRpcs))
 	for ns, rpcs := range allRpcs {
@@ -189,10 +200,6 @@ func getModuleNameFromNamespace(ms schema.ModelSet, ns string) string {
 }
 
 func getModelSet() (schema.ModelSet, error) {
-	compConfig, err := conf.LoadComponentConfigDir(componentDir)
-	if err != nil {
-		return nil, nil
-	}
 
 	ycfg := yangconfig.NewConfig().IncludeYangDirs(yangDir).
 		IncludeFeatures(compile.DefaultCapsLocation).SystemConfig()
@@ -202,9 +209,7 @@ func getModelSet() (schema.ModelSet, error) {
 			YangLocations: ycfg.YangLocator(),
 			Features:      ycfg.FeaturesChecker(),
 			Filter:        compile.IsConfig},
-		&schema.CompilationExtensions{
-			ComponentConfig: compConfig,
-		})
+		&schema.CompilationExtensions{})
 }
 
 func genRpcFunc(
