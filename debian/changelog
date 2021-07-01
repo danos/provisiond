@@ -1,3 +1,21 @@
+provisiond (2.8) unstable; urgency=medium
+
+  [ Nicholas Brown ]
+  * Use 'go vet' instead of 'go tool vet'
+  * Update to debian compat level 10
+
+  [ William Ivory ]
+  * Remove modelset_config_test.go
+  * Remove Dispatcher refs
+
+  [ John Southworth ]
+  * Allow legacy scripts to see RPC metadata.
+
+  [ William Ivory ]
+  * Use componentMappings.
+
+ -- Paul Carson <paul.carson@intl.att.com>  Thu, 01 Jul 2021 14:08:44 +0100
+
 provisiond (2.7) unstable; urgency=medium
 
   [ John Southworth ]
