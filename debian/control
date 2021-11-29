@@ -10,8 +10,7 @@ Build-Depends:
  golang-github-danos-encoding-rfc7951-dev,
  golang-github-danos-mgmterror-dev,
  golang-github-danos-vci-dev (>= 0.4),
- golang-github-danos-yang-dev,
- golang-github-danos-yangd-dev (>= 1.1)
+ golang-github-danos-yang-dev
 Standards-Version: 3.9.8
 
 Package: provisiond
